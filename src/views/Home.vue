@@ -14,10 +14,14 @@ import Meals from "../components/Meals.vue";
 const meals = ref([]);
 
 onMounted(async () => {
-  for (let i = 0; i < 10; i++) {
-    axiosClient
-      .get(`random.php`)
-      .then(({ data }) => meals.value.push(data.meals[0]));
+  try {
+    const requests = Array.from({ length: 10 }).map(() =>
+      axiosClient.get(`random.php`)
+    );
+    const responses = await Promise.all(requests);
+    meals.value = responses.map(({ data }) => data.meals[0]);
+  } catch (error) {
+    console.error("Error fetching meals:", error.message);
   }
 });
 </script>
