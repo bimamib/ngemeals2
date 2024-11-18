@@ -14,14 +14,15 @@ import Meals from "../components/Meals.vue";
 const meals = ref([]);
 
 onMounted(async () => {
-  try {
-    const requests = Array.from({ length: 10 }).map(() =>
-      axiosClient.get(`random.php`)
-    );
-    const responses = await Promise.all(requests);
-    meals.value = responses.map(({ data }) => data.meals[0]);
-  } catch (error) {
-    console.error("Error fetching meals:", error.message);
+  for (let i = 0; i < 10; i++) {
+    try {
+      const response = await axiosClient.get(
+        "https://www.themealdb.com/api/json/v1/1/random.php"
+      );
+      meals.value.push(response.data.meals[0]);
+    } catch (error) {
+      console.error(`Error fetching meal ${i + 1}:`, error.message);
+    }
   }
 });
 </script>
