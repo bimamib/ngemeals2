@@ -1,7 +1,7 @@
 <template>
   <div>
     <header
-      class="flex items-center justify-between h-20 bg-white border shadow"
+      class="flex items-center justify-between h-16 bg-white border shadow"
     >
       <div class="navigation-container">
         <div class="wrap">
@@ -45,16 +45,11 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "MealAppLayout",
-};
-</script>
-
 <style scoped>
 .navigation-container {
   display: flex;
   justify-content: center;
+  border: 2px;
   width: 100%;
 }
 
@@ -62,7 +57,7 @@ export default {
   --round: 10px;
   --p-x: 8px;
   --p-y: 4px;
-  --w-label: 120px;
+  --w-label: 175px;
   display: flex;
   align-items: center;
   padding: var(--p-y) var(--p-x);
