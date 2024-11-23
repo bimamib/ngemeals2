@@ -1,14 +1,38 @@
 <template>
   <div>
     <header
-      class="flex items-center justify-between h-16 bg-white border shadow"
+      class="flex items-center justify-between h-16 px-4 bg-white border shadow"
     >
-      <div class="navigation-container">
+      <!-- Mobile hamburger menu -->
+      <button
+        class="block p-2 rounded-lg md:hidden hover:bg-gray-100"
+        @click="isMenuOpen = !isMenuOpen"
+        aria-label="Menu"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-6 h-6 text-gray-600"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </button>
+
+      <!-- Navigation container -->
+      <div class="navigation-container" :class="{ 'mobile-open': isMenuOpen }">
         <div class="wrap">
           <router-link
             :to="{ name: 'home' }"
             class="label"
             :class="{ active: $route.name === 'home' }"
+            @click="isMenuOpen = false"
           >
             <span>Home</span>
           </router-link>
@@ -17,6 +41,7 @@
             :to="{ name: 'byName' }"
             class="label"
             :class="{ active: $route.name === 'byName' }"
+            @click="isMenuOpen = false"
           >
             <span>Search Meals</span>
           </router-link>
@@ -25,6 +50,7 @@
             :to="{ name: 'byLetter' }"
             class="label"
             :class="{ active: $route.name === 'byLetter' }"
+            @click="isMenuOpen = false"
           >
             <span>Meals By Letter</span>
           </router-link>
@@ -33,6 +59,7 @@
             :to="{ name: 'ingredients' }"
             class="label"
             :class="{ active: $route.name === 'ingredients' }"
+            @click="isMenuOpen = false"
           >
             <span>Meals By Ingredient</span>
           </router-link>
@@ -45,11 +72,25 @@
   </div>
 </template>
 
+<script>
+export default {
+  data() {
+    return {
+      isMenuOpen: false,
+    };
+  },
+  watch: {
+    $route() {
+      this.isMenuOpen = false;
+    },
+  },
+};
+</script>
+
 <style scoped>
 .navigation-container {
   display: flex;
   justify-content: center;
-  border: 2px;
   width: 100%;
 }
 
@@ -155,5 +196,65 @@
 .label:nth-child(4).active ~ .bar,
 .label:nth-child(4).active ~ .slidebar {
   transform: translateX(300%) scaleX(1);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .navigation-container {
+    position: fixed;
+    top: 4rem;
+    left: 0;
+    right: 0;
+    background: white;
+    transform: translateY(-150%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 50;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .navigation-container.mobile-open {
+    transform: translateY(0);
+  }
+
+  .wrap {
+    flex-direction: column;
+    width: 100%;
+    border-radius: 0;
+    padding: 1rem 0;
+    box-shadow: none;
+    background: white;
+  }
+
+  .label {
+    width: 100%;
+    min-width: 100%;
+    padding: 1rem;
+  }
+
+  .bar,
+  .slidebar {
+    display: none;
+  }
+
+  .label.active {
+    background: #666;
+    margin: 0.25rem 1rem;
+    border-radius: var(--round);
+    width: calc(100% - 2rem);
+    min-width: calc(100% - 2rem);
+  }
+}
+
+/* Larger screens */
+@media (min-width: 769px) {
+  .wrap {
+    --w-label: 165px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .wrap {
+    --w-label: 175px;
+  }
 }
 </style>
