@@ -1,6 +1,7 @@
 <template>
   <!-- Detail Meals -->
-  <div class="max-w-[800px] mx-auto p-10">
+  <Loading :visible="loading" />
+  <div v-if="!loading" class="max-w-[800px] mx-auto p-10">
     <h1 class="mb-5 text-4xl font-bold">{{ meal.strMeal }}</h1>
     <div class="px-4 py-4 bg-white shadow rounded-xl">
       <img
@@ -67,13 +68,16 @@ import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import axiosClient from "../axiosClient";
 import YouTubeButton from "../components/YouTubeButton.vue";
+import Loading from "../components/Loading.vue";
 
 const route = useRoute();
 const meal = ref({});
+const loading = ref(true);
 
 onMounted(() => {
   axiosClient.get(`lookup.php?i=${route.params.id}`).then(({ data }) => {
     meal.value = data.meals[0] || {};
+    loading.value = false;
   });
 });
 </script>
