@@ -8,29 +8,53 @@
       v-for="letter of letters"
       :key="letter"
       class="flex items-center justify-center w-2 h-2 transition-all hover:text-red-600 hover:scale-150"
+      @click.native="startLoading"
     >
       {{ letter }}
     </router-link>
+
+    <Loading :visible="loading" />
   </div>
 
-  <Meals :meals="meals" />
+  <Meals v-if="!loading" :meals="meals || []" />
 </template>
 
 <script setup>
-import { computed, onMounted, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import store from "../store";
 import { useRoute } from "vue-router";
 import Meals from "../components/Meals.vue";
+import Loading from "../components/Loading.vue";
 
 const route = useRoute();
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 const meals = computed(() => store.state.mealsByLetter);
+const loading = ref(false);
 
-watch(route, () => {
-  store.dispatch("searchMealsByLetter", route.params.letter);
-});
+function startLoading() {
+  loading.value = true;
+}
+
+async function fetchMealsByLetter(letter) {
+  loading.value = true;
+
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  await store.dispatch("searchMealsByLetter", letter);
+
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  loading.value = false;
+}
+
+watch(
+  () => route.params.letter,
+  (newLetter) => {
+    fetchMealsByLetter(newLetter);
+  }
+);
 
 onMounted(() => {
-  store.dispatch("searchMealsByLetter", route.params.letter);
+  fetchMealsByLetter(route.params.letter);
 });
 </script>
